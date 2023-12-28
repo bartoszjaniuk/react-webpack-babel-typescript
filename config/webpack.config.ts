@@ -1,8 +1,15 @@
 import path from "path";
 import HTMLWebpackPlugin from "html-webpack-plugin";
-import { Configuration } from "webpack";
+import { Configuration as WebpackConfiguration } from "webpack";
+import { Configuration as WebpackDevServerConfiguration } from "webpack-dev-server";
+
 import { NodeEnvironment, pluginOptions } from "../config/setup";
-import { getModes } from "../config/utils";
+import { getModes, useConfig } from "../config/utils";
+import ReactRefreshWebpackPlugin from "@pmmmwh/react-refresh-webpack-plugin";
+
+interface Configuration extends WebpackConfiguration {
+	devServer?: WebpackDevServerConfiguration;
+}
 
 export default (mode: NodeEnvironment) => {
 	// TODO: MAKE USE OF IT
@@ -10,6 +17,12 @@ export default (mode: NodeEnvironment) => {
 
 	const config: Configuration = {
 		mode,
+		// HOT MODULE REPLACEMENT
+		devServer: useConfig(isDev, {
+			hot: true,
+			open: true,
+		}),
+		devtool: isProd ? "cheap-module-source-map" : "source-map",
 		entry: path.resolve(__dirname, "..", "./src/bootstrap.tsx"),
 		output: {
 			path: path.resolve(__dirname, "..", "./public"),
@@ -25,6 +38,7 @@ export default (mode: NodeEnvironment) => {
 				favicon: "./public/favicon.ico",
 				...pluginOptions.htmlWebpackPluginOptions,
 			}),
+			isDev && new ReactRefreshWebpackPlugin(),
 		],
 		module: {
 			rules: [
