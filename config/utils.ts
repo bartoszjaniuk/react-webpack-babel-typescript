@@ -55,9 +55,9 @@ export const getModuleRules = (mode: NodeEnvironment) => {
 		},
 		// ADD CSS FILES
 		{
-			test: /\.css$/,
+			test: /\.(scss|css)$/,
 			exclude: /node_modules/,
-			include: /\.module\.css$/,
+			include: /\.module\.(scss|css)$/,
 			use: [
 				...useLoader(isProd, MiniCssExtractPlugin.loader),
 				...useLoader(isDev, { loader: "style-loader" }),
@@ -75,11 +75,17 @@ export const getModuleRules = (mode: NodeEnvironment) => {
 						sourceMap: !isProd,
 					},
 				},
+				{
+					loader: "sass-loader",
+					options: {
+						sourceMap: !isProd,
+					},
+				},
 			],
 		},
 		{
-			test: /\.css$/,
-			exclude: /\.module\.css$/,
+			test: /\.(scss|css)$/,
+			exclude: /\.module\.(scss|css)$/,
 			use: [
 				...useLoader(isProd, MiniCssExtractPlugin.loader),
 				...useLoader(isDev, { loader: "style-loader" }),
@@ -92,6 +98,12 @@ export const getModuleRules = (mode: NodeEnvironment) => {
 				},
 				{
 					loader: "postcss-loader",
+					options: {
+						sourceMap: !isProd,
+					},
+				},
+				{
+					loader: "sass-loader",
 					options: {
 						sourceMap: !isProd,
 					},
