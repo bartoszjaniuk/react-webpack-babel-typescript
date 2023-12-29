@@ -5,7 +5,7 @@ export enum NodeEnvironment {
 	production = "production",
 }
 
-const appPaths = {
+export const appPaths = {
 	src: path.resolve(process.cwd(), "src"),
 	entry: path.resolve(process.cwd(), "src/bootstrap.tsx"),
 	dist: path.resolve(process.cwd(), "dist"),

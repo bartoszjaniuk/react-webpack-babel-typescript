@@ -2,7 +2,7 @@ import path from "path";
 
 import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
 
-import { NodeEnvironment } from "../config/setup";
+import { NodeEnvironment, appPaths } from "../config/setup";
 import {
 	getModes,
 	getModuleRules,
@@ -22,13 +22,28 @@ export default (mode: NodeEnvironment) => {
 			hot: true,
 			open: true,
 		}),
+		// The overall purpose of this resolve configuration is to simplify import statements
+		//and provide explicit paths for certain dependencies,
+		//helping webpack resolve modules more efficiently.
+		//It also helps in avoiding long and relative import paths by
+		//setting up aliases for commonly used directories.
 		resolve: {
+			alias: {
+				src: appPaths.src,
+				react: path.resolve("node_modules/react"),
+				"react-dom": path.resolve("./node_modules/react-dom"),
+				"react-router-dom": path.resolve("./node_modules/react-router-dom"),
+				"styled-components": path.resolve("./node_modules/styled-components"),
+				"@tanstack/react-query": path.resolve(
+					"./node_modules/@tanstack/react-query",
+				),
+			},
 			extensions: [".js", ".ts", ".tsx", ".jsx"],
 		},
 		devtool: isProd ? "cheap-module-source-map" : "source-map", // it's helpful for debugging code
-		entry: path.resolve(__dirname, "..", "./src/bootstrap.tsx"),
+		entry: appPaths.entry,
 		output: {
-			path: path.resolve(__dirname, "..", "./public"),
+			path: appPaths.dist,
 			filename: "bundle.js",
 		},
 		module: {

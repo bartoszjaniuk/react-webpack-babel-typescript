@@ -1,10 +1,9 @@
-import { NodeEnvironment } from "./setup";
+import { NodeEnvironment, appPaths } from "./setup";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import HTMLWebpackPlugin from "html-webpack-plugin";
 import ReactRefreshWebpackPlugin from "@pmmmwh/react-refresh-webpack-plugin";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
 import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
-import path from "path";
 import { pluginOptions } from "./setup";
 
 export const getModes = (mode: NodeEnvironment) => ({
@@ -22,18 +21,19 @@ export const useLoader = (
 
 export const getWebpackPlugins = (isDev: boolean) => [
 	new BundleAnalyzerPlugin({ analyzerMode: "disabled" }),
-	// new CleanWebpackPlugin(),
+	new CleanWebpackPlugin(),
 	new HTMLWebpackPlugin({
-		template: path.resolve(__dirname, "..", "./public/index.html"),
+		template: appPaths.template,
 		inject: true,
 		favicon: "./public/favicon.ico",
 		...pluginOptions.htmlWebpackPluginOptions,
 	}),
 	isDev && new ReactRefreshWebpackPlugin(),
-	new MiniCssExtractPlugin({
-		filename: "static/css/[name].[contenthash:8].css",
-		chunkFilename: "static/css/[name].[contenthash:8].chunk.css",
-	}),
+	!isDev &&
+		new MiniCssExtractPlugin({
+			filename: "static/css/[name].[contenthash:8].css",
+			chunkFilename: "static/css/[name].[contenthash:8].chunk.css",
+		}),
 ];
 
 export const getModuleRules = (mode: NodeEnvironment) => {
@@ -42,6 +42,7 @@ export const getModuleRules = (mode: NodeEnvironment) => {
 		{
 			test: /\.(ts|js)$/,
 			exclude: /node_modules/,
+			include: appPaths.src,
 			use: {
 				loader: "babel-loader",
 			},
@@ -56,9 +57,32 @@ export const getModuleRules = (mode: NodeEnvironment) => {
 		{
 			test: /\.css$/,
 			exclude: /node_modules/,
+			include: /\.module\.css$/,
 			use: [
-				...useLoader(isDev, { loader: "style-loader" }),
 				...useLoader(isProd, MiniCssExtractPlugin.loader),
+				...useLoader(isDev, { loader: "style-loader" }),
+				{
+					loader: "css-loader",
+					options: {
+						importLoaders: 1,
+						sourceMap: !isProd,
+						modules: true,
+					},
+				},
+				{
+					loader: "postcss-loader",
+					options: {
+						sourceMap: !isProd,
+					},
+				},
+			],
+		},
+		{
+			test: /\.css$/,
+			exclude: /\.module\.css$/,
+			use: [
+				...useLoader(isProd, MiniCssExtractPlugin.loader),
+				...useLoader(isDev, { loader: "style-loader" }),
 				{
 					loader: "css-loader",
 					options: {
