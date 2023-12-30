@@ -9,15 +9,15 @@ export const App = () => {
   return (
     <>
       <div className="container">
-        <Styled.AppH1>App</Styled.AppH1>
+        <Styled.AppH1>Styled H1 Tag</Styled.AppH1>
         <img src={image} alt="React Logo" width={50} height={50} />
-        <p className={styles.paragraph}>test</p>
+        <p className={styles.paragraph}>CSS Module Paragraph</p>
       </div>
       <div className="sass">
         <div className="sass__container">
-          <h1>App</h1>
+          <h1>SCSS H1 TAG</h1>
           <img src={image} alt="React Logo" width={50} height={50} />
-          <p className={styles.paragraph}>test</p>
+          <p className={styles.paragraph}>SCSS Module Paragraph</p>
         </div>
       </div>
     </>
