@@ -23,11 +23,8 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Check ENVS
-        run: echo $S3_BUCKET
-
       - name: Deploy to AWS
-        run: aws s3 sync ./dist s3://$S3_BUCKET --delete --region eu-west-1
+        run: aws s3 sync ./dist s3://$S3_BUCKET --delete
 
       - name: Clean Cache from CloudFront
         run: aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION --paths "/*"
