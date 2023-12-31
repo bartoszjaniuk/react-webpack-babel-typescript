@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Read variables
-        uses: echo "My bucket is ${{vars.S3_BUCKET}}"
+        run: echo "My bucket is ${{vars.S3_BUCKET}}"
 
       - name: Checkout code
         uses: actions/checkout@v2
