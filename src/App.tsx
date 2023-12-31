@@ -9,7 +9,7 @@ export const App = () => {
   return (
     <>
       <div className="container">
-        <Styled.AppH1>Styled H1 Tag AUTO DEPLOY AWS</Styled.AppH1>
+        <Styled.AppH1>Styled H1 Tag uat with AWS</Styled.AppH1>
         <img src={image} alt="React Logo" width={50} height={50} />
         <p className={styles.paragraph}>CSS Module Paragraph</p>
       </div>
