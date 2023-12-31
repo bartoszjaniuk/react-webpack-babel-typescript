@@ -8,13 +8,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      S3_BUCKET: ${{ vars.S3_BUCKET }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET }}
       CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
 
     steps:
-      - name: Read variables
-        run: echo "My bucket is ${{vars.S3_BUCKET}}"
-
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -25,7 +22,7 @@ jobs:
         run: npm run build
 
       - name: Check ENVS
-        run: echo $S3_BUCKET echo $CLOUDFRONT_DISTRIBUTION
+        run: echo $S3_BUCKET
 
       - name: Deploy to AWS
         run: aws s3 sync ./dist s3://$S3_BUCKET --delete --region eu-west-1
