@@ -24,7 +24,7 @@ jobs:
         run: npm run build
 
       - name: Deploy to AWS
-        run: aws s3 sync ./dist s3://$S3_BUCKET --delete
+        run: aws s3 sync ./dist s3://$S3_BUCKET --delete --region eu-west-1
 
       - name: Clean Cache from CloudFront
-        run: aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION --paths "/*"
+        run: aws cloudfront create-invalidation --region eu-west-1 --distribution-id $CLOUDFRONT_DISTRIBUTION --paths "/*"
