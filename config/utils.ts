@@ -4,8 +4,11 @@ import HTMLWebpackPlugin from 'html-webpack-plugin';
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import webpack from 'webpack';
 
 import { NodeEnvironment, appPaths, pluginOptions } from './setup';
+
+const { ModuleFederationPlugin } = webpack.container;
 
 export const getModes = (mode: NodeEnvironment) => ({
   isProd: mode === NodeEnvironment.production,
@@ -31,6 +34,11 @@ export const getWebpackPlugins = (isDev: boolean) => [
       filename: 'static/css/[name].[contenthash:8].css',
       chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
     }),
+  new ModuleFederationPlugin({
+    remotes: {
+      SharedLayout: 'SharedLayout@https://effortless-sunshine-a6e22f.netlify.app/remoteEntry.js',
+    },
+  }),
 ];
 
 export const getModuleRules = (mode: NodeEnvironment) => {
