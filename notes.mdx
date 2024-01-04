@@ -1,0 +1,327 @@
+# Webpack 5 configuration
+
+## mode: 'development' | 'production'
+
+tells webpack to use its built-in optimizations accordingly
+
+## devServer
+
+It' set of options be used to change
+its behavior in various ways eg.
+
+```js
+    static: {
+        directory: appPaths.public, // Specifies the directory to serve static files from. In this case, it is set to appPaths.public.
+        serveIndex: true, // When set to true, it enables serving directory indexes (listing of files) when the server receives a request for a directory without an index file.
+        staticOptions: {},
+        watch: true, // When set to true, it enables watching for changes in static files.
+},
+```
+
+```js
+port: 2137; // Specifies the port on which the dev server will run. Defaults to 8080.
+```
+
+```js
+    open:  // When set to true, it automatically opens the default browser when the server starts.
+    openPage:  // Specifies the URL path to open in the browser. Useful when combined with open.
+```
+
+```js
+hot: true; // Enables Hot Module Replacement. It allows modules to be updated without a full page reload during development.
+```
+
+```js
+// Helps in routing in single-page applications.
+// It fallbacks to index.html when the requested resource can't be found
+  historyApiFallback: {
+    disableDotRule: true, // The dot rule allows files without extensions to resolve to an extension-less file, some-page => some-page.html Extension is not needed anymore
+    index: '/',
+  },
+```
+
+```js
+    proxy: // Configures a proxy for API requests.
+    // Useful during development when you want to avoid CORS issues.
+```
+
+```js
+    overlay: // Configures overlay errors/warnings in the browser.
+// It can be set to true to display full-screen overlay or an object to customize its behavior.
+```
+
+```js
+before and after: // Useful for custom middlewares
+    before: // Provides a function that is called before the server starts.
+    after:  //Provides a function that is called after the server is started.
+```
+
+```js
+server: // Allows to set server and options (by default 'http').
+```
+
+## resolve
+
+The overall purpose of this resolve configuration is to simplify import statements
+and provide explicit paths for certain dependencies,
+helping webpack resolve modules more efficiently.
+It also helps in avoiding long and relative import paths by
+setting up aliases for commonly used directories.
+
+```js
+ resolve: {
+   alias: {
+     src: appPaths.src,
+     react: path.resolve('node_modules/react'),
+     'react-dom': path.resolve('./node_modules/react-dom'),
+     'react-router-dom': path.resolve('./node_modules/react-router-dom'),
+     'styled-components': path.resolve('./node_modules/styled-components'),
+     '@tanstack/react-query': path.resolve('./node_modules/@tanstack/react-query'),
+   },
+   extensions: ['.js', '.ts', '.tsx', '.jsx'], // Attempt to resolve these extensions in order
+ },
+```
+
+## devtool
+
+Default: none;
+
+This option controls if and how source maps are generated.
+
+SourceMaps allow developers to debug and trace issues in the original source code even when the code has gone through transformations such as minification, bundling, or transpilation.
+
+source-map is recommended choice for production builds with high quality SourceMaps.
+
+## entry
+
+The point or points where to start the application bundling process. If an array is passed then all items will be processed.
+
+```js
+entry: path.resolve(process.cwd(), 'src/index.ts');
+```
+
+## output
+
+```js
+ output: {
+      path: appPaths.dist,
+      filename: 'static/js/[name].[contenthash:8].js' ,
+      chunkFilename: 'static/js/[name].[contenthash:8].chunk.js',
+      hashFunction: 'xxhash64',
+    },
+```
+
+Specifies the name of the main output file.
+The [name] placeholder will be replaced with the name of the entry point.
+The[contenthash:8] will be replaced with a unique content-based hash.
+This is used to ensure that the filename changes when
+the content of the file changes, facilitating better caching in production.
+
+## module
+
+These options determine how the different types of modules within a project will be treated.
+
+### rules
+
+These rules are evaluated only when the parent Rule condition matches. Each nested rule can contain its own conditions.
+
+#### babel-loader - Transpiles JavaScript and TypeScript code using Babel.
+
+```jsx
+    {
+      test: /\.(ts|js)$/,
+      exclude: /node_modules/,
+      include: appPaths.src,
+      use: {
+        loader: 'babel-loader',
+      },
+    },
+```
+
+#### ts-loader - Transpiles TypeScript code into JavaScript.
+
+```jsx
+    {
+      test: /\.(ts|tsx)$/,
+      exclude: /node_modules/,
+      use: 'ts-loader',
+    },
+```
+
+#### style-loader:
+
+Adds styles to the DOM by injecting style tags
+
+#### MiniCssExtractPlugin.loader:
+
+In production, it extracts the CSS from the JavaScript bundle and creates a separate CSS file.
+This is useful for better performance and caching.
+
+#### css-loader:
+
+Resolves @import and url() statements within CSS files.
+
+#### postcss-loader:
+
+Applies PostCSS transformations to CSS.
+
+#### sass-loader:
+
+Transpiles Sass/SCSS code to CSS.
+
+```jsx
+  {
+      test: /\.(scss|css)$/,
+      exclude: /node_modules/,
+      include: /\.module\.(scss|css)$/,
+      use: [
+        ...useLoader(isProd, MiniCssExtractPlugin.loader),
+        ...useLoader(isDev, { loader: 'style-loader' }),
+        {
+          loader: 'css-loader',
+          options: {
+            importLoaders: 1,
+            sourceMap: !isProd,
+            modules: true,
+          },
+        },
+        {
+          loader: 'postcss-loader',
+          options: {
+            sourceMap: !isProd,
+          },
+        },
+        {
+          loader: 'sass-loader',
+          options: {
+            sourceMap: !isProd,
+          },
+        },
+      ],
+    },
+    {
+      test: /\.(scss|css)$/,
+      exclude: /\.module\.(scss|css)$/,
+      use: [
+        ...useLoader(isProd, MiniCssExtractPlugin.loader),
+        ...useLoader(isDev, { loader: 'style-loader' }),
+        {
+          loader: 'css-loader',
+          options: {
+            importLoaders: 1,
+            sourceMap: !isProd,
+          },
+        },
+        {
+          loader: 'postcss-loader',
+          options: {
+            sourceMap: !isProd,
+          },
+        },
+        {
+          loader: 'sass-loader',
+          options: {
+            sourceMap: !isProd,
+          },
+        },
+      ],
+    },
+```
+
+WEBPACK 5 HAS SUPPORT FOR IMAGES OUT OF THE BOX
+ADD SUPPORT FOR IMAGES
+
+```jsx
+    {
+    test: /\.(?:ico|gif|png|jpg|jpeg)$/i,
+    type: 'asset/resource',
+    },
+```
+
+ADD SUPPORT FOR ASSETS
+
+```jsx
+    {
+    test: /\.(woff(2)?|eot|ttf|otf|svg|)$/,
+    type: 'asset/inline',
+    },
+```
+
+Each loader plays a specific role in the build process,
+and the combination of these loaders allows for the transformation
+and bundling of different file types in a JavaScript project.
+The loaders are configured in the Webpack rules to handle specific file types
+and apply the necessary transformations before bundling them into the final output.
+
+## optimizations
+
+Since version 4 webpack runs optimizations for you depending on the chosen mode,
+till all optimizations are available for manual configuration and overrides.
+
+```jsx
+    optimization: {
+      minimize: isProd,
+      // I can omit the TerserPlugin as it's now built into Webpack 5
+      minimizer: [new CssMinimizerPlugin()],
+    },
+```
+
+Tell webpack to minimize the bundle using the TerserPlugin or the plugin(s) specified in optimization.minimizer.
+
+## plugins
+
+### BundleAnalyzerPlugin
+
+This plugin is used for visualizing the size of the webpack output files using an interactive zoomable treemap.
+
+### CleanWebpackPlugin
+
+This plugin is responsible for cleaning the output directory (specified by output.path) before each build.
+It ensures that only the files generated by the latest build are present in the output directory.
+
+### HTMLWebpackPlugin
+
+```jsx
+  new HTMLWebpackPlugin({
+    template: appPaths.template,
+    inject: true,
+    favicon: './public/favicon.ico',
+    minify: {
+      removeComments: true,
+      collapseWhitespace: true,
+      removeRedundantAttributes: true,
+      useShortDoctype: true,
+      removeEmptyAttributes: true,
+      removeStyleLinkTypeAttributes: true,
+      keepClosingSlash: true,
+      minifyJS: true,
+      minifyCSS: true,
+      minifyURLs: true,
+    },
+  }),
+```
+
+Simplifies the creation of an HTML file to include in the webpack build.
+It automatically injects the necessary script tags for the generated bundles.
+The configuration includes options such as:
+
+- template (path to the HTML template file),
+- inject (whether to inject script tags automatically),
+- favicon (path to the favicon),
+- minfy options
+
+### ReactRefreshWebpackPlugin
+
+Enables Hot Module Replacement (HMR) for React components during development.
+HMR allows for faster development by updating only the modified parts of the application without a full page reload.
+
+### MiniCssExtractPlugin
+
+Extracts CSS into separate files during the production build.
+In development mode (isDev is true), styles are typically injected dynamically,
+but in production, it's common to extract them into separate files for better performance and caching.
+
+### ModuleFederationPlugin
+
+This plugin is used for setting up Module Federation in webpack.
+Module Federation allows sharing code and state between independently deployed applications.

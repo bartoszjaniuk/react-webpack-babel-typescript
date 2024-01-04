@@ -52,13 +52,13 @@ export const getModuleRules = (mode: NodeEnvironment) => {
         loader: 'babel-loader',
       },
     },
-    // ADD TYPESCRIPT
+
     {
       test: /\.(ts|tsx)$/,
       exclude: /node_modules/,
       use: 'ts-loader',
     },
-    // ADD CSS FILES
+
     {
       test: /\.(scss|css)$/,
       exclude: /node_modules/,
@@ -115,13 +115,12 @@ export const getModuleRules = (mode: NodeEnvironment) => {
         },
       ],
     },
-    // WEBPACK 5 HAS SUPPORT FOR IMAGES OUT OF THE BOX
-    // ADD SUPPORT FOR IMAGES
+
     {
       test: /\.(?:ico|gif|png|jpg|jpeg)$/i,
       type: 'asset/resource',
     },
-    // ADD SUPPORT FOR ASSETS
+
     {
       test: /\.(woff(2)?|eot|ttf|otf|svg|)$/,
       type: 'asset/inline',
