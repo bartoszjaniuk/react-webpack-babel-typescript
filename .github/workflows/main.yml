@@ -50,7 +50,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: run echo $NETLIFY_SITE_ID echo $NETLIFY_AUTH_TOKEN
+        run: run echo $NETLIFY_SITE_ID echo $NETLIFY_AUTH_TOKEN
 
       - name: Checkout code
         uses: actions/checkout@v2
