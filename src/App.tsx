@@ -17,7 +17,7 @@ export const App = () => {
       <Suspense fallback={<div>Loading Header...</div>}>
         <Layout>
           <div className="container">
-            <Styled.AppH1>This is only for stage</Styled.AppH1>
+            <Styled.AppH1>This is only for stage test</Styled.AppH1>
             <img src={image} alt="React Logo" width={50} height={50} />
             <p className={styles.paragraph}>CSS Module Paragraph</p>
           </div>
