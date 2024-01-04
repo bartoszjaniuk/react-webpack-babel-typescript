@@ -22,23 +22,24 @@ export const useLoader = (condition: boolean, loader: Record<string, unknown> | 
 export const getWebpackPlugins = (isDev: boolean) => [
   new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }),
   new CleanWebpackPlugin(),
+  new ModuleFederationPlugin({
+    remotes: {
+      SharedLayout: 'SharedLayout@https://effortless-sunshine-a6e22f.netlify.app/remoteEntry.js',
+    },
+  }),
   new HTMLWebpackPlugin({
     template: appPaths.template,
     inject: true,
     favicon: './public/favicon.ico',
     ...pluginOptions.htmlWebpackPluginOptions,
   }),
+
   isDev && new ReactRefreshWebpackPlugin(),
   !isDev &&
     new MiniCssExtractPlugin({
       filename: 'static/css/[name].[contenthash:8].css',
       chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
     }),
-  new ModuleFederationPlugin({
-    remotes: {
-      SharedLayout: 'SharedLayout@https://effortless-sunshine-a6e22f.netlify.app/remoteEntry.js',
-    },
-  }),
 ];
 
 export const getModuleRules = (mode: NodeEnvironment) => {

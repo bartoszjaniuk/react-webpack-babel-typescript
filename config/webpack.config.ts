@@ -10,10 +10,10 @@ export default (mode: NodeEnvironment) => {
   const { isProd, isDev } = getModes(mode);
 
   const config: Configuration = {
-    mode: 'development',
+    mode,
     devServer: useConfig(isDev, {
       hot: true,
-      open: false,
+      open: true,
     }),
 
     resolve: {
@@ -37,7 +37,7 @@ export default (mode: NodeEnvironment) => {
       rules: [...getModuleRules(mode)],
     },
     optimization: {
-      minimize: isProd,
+      // minimize: isProd,
       minimizer: [new CssMinimizerPlugin()],
     },
     plugins: [...getWebpackPlugins(isDev)],
