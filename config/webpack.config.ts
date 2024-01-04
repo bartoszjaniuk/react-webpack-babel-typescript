@@ -27,7 +27,7 @@ export default (mode: NodeEnvironment) => {
       },
       extensions: ['.js', '.ts', '.tsx', '.jsx'],
     },
-    devtool: isProd ? 'source-map' : 'eval-source-map-map', // it's helpful for debugging code
+    devtool: isProd ? 'source-map' : 'eval-source-map', // it's helpful for debugging code
     entry: appPaths.entry,
     output: {
       path: appPaths.dist,
