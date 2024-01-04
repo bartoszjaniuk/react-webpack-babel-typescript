@@ -10,10 +10,10 @@ export default (mode: NodeEnvironment) => {
   const { isProd, isDev } = getModes(mode);
 
   const config: Configuration = {
-    mode,
+    mode: 'development',
     devServer: useConfig(isDev, {
       hot: true,
-      open: true,
+      open: false,
     }),
 
     resolve: {
